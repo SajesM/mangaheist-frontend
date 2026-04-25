@@ -53,6 +53,18 @@ function Reader() {
     if (mangaId) loadManga();
   }, [mangaId]);
 
+    useEffect(() => {
+    // instant reset
+    window.scrollTo(0, 0);
+
+    // ensure after render + image load shift
+    const timeout = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 50);
+
+    return () => clearTimeout(timeout);
+  }, [chapterId]);
+
   // Check bookmark status
   useEffect(() => {
     const checkBookmark = async () => {
