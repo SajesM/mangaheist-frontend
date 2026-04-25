@@ -14,7 +14,7 @@ function Browse() {
 
     const fetchLatestManga = async () => {
         try {
-            const response = await fetch('/api/manga/latest');
+            const response = await fetch('https://mangaheist-backend.onrender.com/api/manga/latest');
             const data = await response.json();
             setLatestManga(data || []);
         } catch (error) {
@@ -28,7 +28,7 @@ function Browse() {
 
         setIsSearching(true);
         try {
-            const response = await fetch(`/api/manga/search?title=${encodeURIComponent(searchQuery)}`);
+            const response = await fetch(`https://mangaheist-backend.onrender.com/api/manga/search?title=${encodeURIComponent(searchQuery)}`);
             const data = await response.json();
             setSearchResults(data || []);
         } catch (error) {
