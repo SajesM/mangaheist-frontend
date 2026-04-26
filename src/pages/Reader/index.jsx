@@ -20,19 +20,25 @@ function Reader() {
   useEffect(() => {
     const loadPages = async () => {
       try {
-        const res = await fetch(
-          `https://mangaheist-backend.onrender.com/api/manga/pages/${chapterId}`,
-        );
+        setPages([]); // Clear previous pages
+        const res = await fetch(`/api/manga/pages/${chapterId}`);
         const data = await res.json();
-        setPages(data);
-      } catch (err) {
-        console.error(err);
+        if (Array.isArray(data)) {
+          setPages(data);
+        } else {
+          console.error("Error loading pages:", data.message);
+          setPages([]);
+        }
+      } catch (err) { 
+        console.error("Failed to fetch pages:", err); 
+        setPages([]);
       }
     };
     if (chapterId) {
       loadPages();
     }
   }, [chapterId]);
+
 
   useEffect(() => {
     const loadChapters = async () => {
@@ -234,15 +240,6 @@ function Reader() {
             src={page}
             alt={`Page ${index + 1}`}
             onLoad={() => setCurrentPage(index + 1)}
-            // onError={async (e) => {
-            //   console.log("Image broke, refreshing CDN");
-            //   try {
-            //     const newPages = await fetchPages(chapterId);
-            //     e.target.src = newPages[index];
-            //   } catch (err) {
-            //     console.error("retry failed", err);
-            //   }
-            // }}
           />
         ))}
       </div>
