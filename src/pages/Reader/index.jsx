@@ -21,7 +21,7 @@ function Reader() {
     const loadPages = async () => {
       try {
         setPages([]); // Clear previous pages
-        const res = await fetch(`/api/manga/pages/${chapterId}`);
+        const res = await fetch(`https://mangaheist-backend.onrender.com/api/manga/pages/${chapterId}`);
         const data = await res.json();
         if (Array.isArray(data)) {
           setPages(data);
