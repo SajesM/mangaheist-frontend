@@ -237,7 +237,7 @@ function Reader() {
           <img
             className="w-full max-w-[800px]"
             key={index}
-            src={page}
+            src={`https://mangaheist-backend.onrender.com/api/manga/page/${page.hash}/${page.file}`}
             alt={`Page ${index + 1}`}
             onLoad={() => setCurrentPage(index + 1)}
           />
