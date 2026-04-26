@@ -235,6 +235,7 @@ function Reader() {
       <div className="flex flex-col items-center gap-1 py-4 pb-24 md:pb-4">
         {pages.map((page, index) => (
           <img
+            loading="lazy"
             className="w-full max-w-[800px]"
             key={index}
             src={`https://mangaheist-backend.onrender.com/api/manga/page/${page.hash}/${page.file}`}

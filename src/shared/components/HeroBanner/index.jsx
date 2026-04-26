@@ -33,6 +33,7 @@ function Herobanner({ items }) {
       {/* Background cover — only visible md+ */}
       <div className="absolute right-0 top-0 h-full w-full md:w-[60%] hidden md:block opacity-60">
         <img
+          loading="lazy"
           key={`bg-${currentIndex}`} // Force re-render for fade
           className="w-full h-full object-cover object-center animate-fade-in"
           src={cover}
@@ -46,6 +47,7 @@ function Herobanner({ items }) {
         {/* Cover image — hidden on very small screens, shown as thumbnail on md+ */}
         <div className="hidden md:flex flex-shrink-0 w-[150px] lg:w-[200px] h-[220px] lg:h-[300px] rounded-xl overflow-hidden border-2 border-gray-800 shadow-2xl shadow-rose-500/20">
           <img
+            loading="lazy"
             src={cover}
             alt={title}
             className="w-full h-full object-cover"
@@ -55,6 +57,7 @@ function Herobanner({ items }) {
         {/* Mobile cover banner */}
         <div className="md:hidden w-full h-[180px] overflow-hidden rounded-xl mb-2 relative">
           <img
+            loading="lazy"
             src={cover}
             alt={title}
             className="w-full h-full object-cover object-top"
