@@ -12,12 +12,6 @@ function Reader() {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const navigate = useNavigate();
 
-  const fetchPages = async (chapterId) => {
-    const res = await fetch(
-      `https://api.mangadex.org/at-home/server/${chapterId}`,
-    );
-    return await res.json();
-  };
   // Reset page counter when chapter changes
   useEffect(() => {
     setCurrentPage(0);
@@ -240,15 +234,15 @@ function Reader() {
             src={page}
             alt={`Page ${index + 1}`}
             onLoad={() => setCurrentPage(index + 1)}
-            onError={async (e) => {
-              console.log("Image broke, refreshing CDN");
-              try {
-                const newPages = await fetchPages(chapterId);
-                e.target.src = newPages[index];
-              } catch (err) {
-                console.error("retry failed", err);
-              }
-            }}
+            // onError={async (e) => {
+            //   console.log("Image broke, refreshing CDN");
+            //   try {
+            //     const newPages = await fetchPages(chapterId);
+            //     e.target.src = newPages[index];
+            //   } catch (err) {
+            //     console.error("retry failed", err);
+            //   }
+            // }}
           />
         ))}
       </div>
