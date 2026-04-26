@@ -14,7 +14,7 @@ function Reader() {
 
   const fetchPages = async (chapterId) => {
     const res = await fetch(
-      `https://mangaheist-backend.onrender.com/api/manga/pages/${chapterId}`,
+      `https://api.mangadex.org/at-home/server/${chapterId}`,
     );
     return await res.json();
   };
