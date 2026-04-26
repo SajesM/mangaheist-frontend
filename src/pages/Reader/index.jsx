@@ -12,6 +12,12 @@ function Reader() {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const navigate = useNavigate();
 
+  const fetchPages = async (chapterId) => {
+    const res = await fetch(
+      `https://mangaheist-backend.onrender.com/api/manga/pages/${chapterId}`,
+    );
+    return await res.json();
+  };
   // Reset page counter when chapter changes
   useEffect(() => {
     setCurrentPage(0);
@@ -20,10 +26,14 @@ function Reader() {
   useEffect(() => {
     const loadPages = async () => {
       try {
-        const res = await fetch(`https://mangaheist-backend.onrender.com/api/manga/pages/${chapterId}`);
+        const res = await fetch(
+          `https://mangaheist-backend.onrender.com/api/manga/pages/${chapterId}`,
+        );
         const data = await res.json();
         setPages(data);
-      } catch (err) { console.error(err); }
+      } catch (err) {
+        console.error(err);
+      }
     };
     if (chapterId) {
       loadPages();
@@ -33,10 +43,14 @@ function Reader() {
   useEffect(() => {
     const loadChapters = async () => {
       try {
-        const res = await fetch(`https://mangaheist-backend.onrender.com/api/manga/chapters/${mangaId}`);
+        const res = await fetch(
+          `https://mangaheist-backend.onrender.com/api/manga/chapters/${mangaId}`,
+        );
         const data = await res.json();
         setChapters(data.data || []);
-      } catch (err) { console.error(err); }
+      } catch (err) {
+        console.error(err);
+      }
     };
     if (mangaId) loadChapters();
   }, [mangaId, chapterId]);
@@ -44,16 +58,20 @@ function Reader() {
   useEffect(() => {
     const loadManga = async () => {
       try {
-        const res = await fetch(`https://mangaheist-backend.onrender.com/api/manga/${mangaId}`);
+        const res = await fetch(
+          `https://mangaheist-backend.onrender.com/api/manga/${mangaId}`,
+        );
         const manga = await res.json();
         setMangaTitle(manga.title);
         setCoverFileName(manga.coverFile || "");
-      } catch (err) { console.error(err); }
+      } catch (err) {
+        console.error(err);
+      }
     };
     if (mangaId) loadManga();
   }, [mangaId]);
 
-    useEffect(() => {
+  useEffect(() => {
     // instant reset
     window.scrollTo(0, 0);
 
@@ -72,9 +90,11 @@ function Reader() {
       try {
         const res = await api.getBookmarks();
         if (res?.bookmarks) {
-          setIsBookmarked(res.bookmarks.some(b => b.mangaId === mangaId));
+          setIsBookmarked(res.bookmarks.some((b) => b.mangaId === mangaId));
         }
-      } catch (err) { console.error(err); }
+      } catch (err) {
+        console.error(err);
+      }
     };
     if (mangaId) checkBookmark();
   }, [mangaId]);
@@ -85,9 +105,15 @@ function Reader() {
       return;
     }
     try {
-      await api.toggleBookmark({ mangaId, title: mangaTitle, cover: coverFileName });
-      setIsBookmarked(prev => !prev);
-    } catch (err) { console.error(err); }
+      await api.toggleBookmark({
+        mangaId,
+        title: mangaTitle,
+        cover: coverFileName,
+      });
+      setIsBookmarked((prev) => !prev);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // Mark as read — fires once when chapterId + mangaTitle are both ready.
@@ -100,26 +126,32 @@ function Reader() {
 
     let called = false;
 
-    const ch = chapters.find(c => c.id === chapterId);
+    const ch = chapters.find((c) => c.id === chapterId);
     const chapterNumber = ch?.attributes?.chapter || "?";
 
     called = true;
-    api.markAsRead({
-      mangaId,
-      chapterId,
-      mangaTitle,
-      coverUrl: coverFileName,
-      chapterNumber,
-    }).catch(err => console.error(err));
+    api
+      .markAsRead({
+        mangaId,
+        chapterId,
+        mangaTitle,
+        coverUrl: coverFileName,
+        chapterNumber,
+      })
+      .catch((err) => console.error(err));
 
-    return () => { called = false; };
+    return () => {
+      called = false;
+    };
   }, [chapterId, mangaTitle]); // only re-fire when the chapter or title changes
 
   const sortedChapters = [...chapters].sort(
     (a, b) => (a.attributes.chapter || 0) - (b.attributes.chapter || 0),
   );
 
-  const currentChapterIndex = sortedChapters.findIndex((ch) => ch.id === chapterId);
+  const currentChapterIndex = sortedChapters.findIndex(
+    (ch) => ch.id === chapterId,
+  );
   const nextChapter = sortedChapters[currentChapterIndex + 1];
   const prevChapter = sortedChapters[currentChapterIndex - 1];
 
@@ -148,7 +180,9 @@ function Reader() {
         {/* Center: chapter navigation */}
         <div className="justify-self-center flex items-center gap-1 md:gap-2">
           <button
-            onClick={() => prevChapter && navigate(`/reader/${mangaId}/${prevChapter.id}`)}
+            onClick={() =>
+              prevChapter && navigate(`/reader/${mangaId}/${prevChapter.id}`)
+            }
             disabled={!prevChapter}
             className="text-gray-300 hover:text-white bg-gray-800 hover:bg-gray-700 disabled:opacity-30 transition-colors px-2 md:px-3 py-1.5 rounded text-sm font-semibold"
           >
@@ -159,7 +193,8 @@ function Reader() {
             className="bg-gray-800 text-white font-semibold text-xs md:text-sm px-2 py-1.5 rounded border border-gray-700 focus:outline-none focus:border-rose-500 transition-colors max-w-[110px] md:max-w-[180px]"
             onChange={(e) => {
               const selectedChapter = e.target.value;
-              if (selectedChapter) navigate(`/reader/${mangaId}/${selectedChapter}`);
+              if (selectedChapter)
+                navigate(`/reader/${mangaId}/${selectedChapter}`);
             }}
           >
             {sortedChapters.map((ch) => (
@@ -169,7 +204,9 @@ function Reader() {
             ))}
           </select>
           <button
-            onClick={() => nextChapter && navigate(`/reader/${mangaId}/${nextChapter.id}`)}
+            onClick={() =>
+              nextChapter && navigate(`/reader/${mangaId}/${nextChapter.id}`)
+            }
             disabled={!nextChapter}
             className="text-gray-300 hover:text-white bg-gray-800 hover:bg-gray-700 disabled:opacity-30 transition-colors px-2 md:px-3 py-1.5 rounded text-sm font-semibold"
           >
@@ -181,13 +218,16 @@ function Reader() {
         <button
           onClick={toggleBookmark}
           title={isBookmarked ? "Remove bookmark" : "Bookmark this manga"}
-          className={`justify-self-end flex items-center gap-1 text-sm font-semibold px-3 py-1.5 rounded transition-colors ${isBookmarked
-            ? "bg-rose-500 hover:bg-rose-600 text-white"
-            : "bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white"
-            }`}
+          className={`justify-self-end flex items-center gap-1 text-sm font-semibold px-3 py-1.5 rounded transition-colors ${
+            isBookmarked
+              ? "bg-rose-500 hover:bg-rose-600 text-white"
+              : "bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white"
+          }`}
         >
           {/* Bookmark*/}
-          <span className="hidden sm:inline">{isBookmarked ? "Bookmark Saved" : "Bookmark"}</span>
+          <span className="hidden sm:inline">
+            {isBookmarked ? "Bookmark Saved" : "Bookmark"}
+          </span>
         </button>
       </div>
 
@@ -200,6 +240,15 @@ function Reader() {
             src={page}
             alt={`Page ${index + 1}`}
             onLoad={() => setCurrentPage(index + 1)}
+            onError={async (e) => {
+              console.log("Image broke, refreshing CDN");
+              try {
+                const newPages = await fetchPages(chapterId);
+                e.target.src = newPages[index];
+              } catch (err) {
+                console.error("retry failed", err);
+              }
+            }}
           />
         ))}
       </div>
@@ -222,7 +271,9 @@ function Reader() {
           className="bg-gray-800 text-white font-semibold text-xs md:text-sm px-2 md:px-4 py-2 rounded border border-gray-700 focus:outline-none focus:border-rose-500 transition-colors max-w-[140px] md:max-w-none"
           onChange={(e) => {
             const selectedChapter = e.target.value;
-            if (selectedChapter) { navigate(`/reader/${mangaId}/${selectedChapter}`) };
+            if (selectedChapter) {
+              navigate(`/reader/${mangaId}/${selectedChapter}`);
+            }
           }}
         >
           <option value="">Chapters</option>
