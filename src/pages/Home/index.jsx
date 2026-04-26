@@ -15,8 +15,8 @@ function Home() {
         setLoading(true);
         const [mangaRes, topRes, latestRes] = await Promise.all([
           fetch('https://mangaheist-backend.onrender.com/api/manga/list?limit=10'),
-          fetch('https://mangaheist-backend.onrender.com/api/manga/trending'),
-          fetch('https://mangaheist-backend.onrender.com/api/manga/latest')
+          fetch('https://mangaheist-backend.onrender.com/api/manga/trending?limit=5'),
+          fetch('https://mangaheist-backend.onrender.com/api/manga/latest?limit=5')
         ]);
 
         if (!mangaRes.ok || !topRes.ok || !latestRes.ok) throw new Error("Failed to fetch data");
